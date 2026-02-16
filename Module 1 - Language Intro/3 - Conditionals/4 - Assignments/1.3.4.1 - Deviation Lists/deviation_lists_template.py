@@ -30,3 +30,15 @@ random_list_B = random.sample(range(100), random_length)
 longest_list_is = None
 
 ### YOUR CODE HERE
+
+x = np.std(random_list_A)
+y = np.std(random_list_B)
+
+if x > y:
+    longest_list_is = random_list_A
+elif x == y:
+    longest_list_is = 0
+else:
+    longest_list_is = random_list_B
+
+print(longest_list_is)
