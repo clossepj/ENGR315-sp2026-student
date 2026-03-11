@@ -24,9 +24,14 @@ while x != 0:
 c = 3
 y = 0
 while y < 5:
-    break
+    c += c
+    y = y + 1
 
 # it's time to combine both of these concepts.
 # write a loop entirely from scratch that prints out a statement 6 times
 # the counter variable you will use is z
 z = 0
+while z < 6:
+    z += 1
+    print("not 6 yet, but we're at " + str(z))
+    print(z)
