@@ -1,5 +1,5 @@
 import sys
-
+ 
 
 def parse_nyt_data(file_path=''):
     """
@@ -67,6 +67,18 @@ def first_question(data):
     """
 
     # your code here
+    harrisonburg_date = None
+    rockingham_date = None
+
+    for (date, county, state, fips, cases, deaths) in data:
+        if state == "Virginia":
+            if county == "Rockingham" and cases > 0 and rockingham_date is None: 
+                rockingham_date = date
+            if county == "Harrisonburg city" and cases > 0 and harrisonburg_date is None: 
+                harrisonburg_date = date
+    
+    print("First positive case in Rockingham County:", rockingham_date)
+    print("First positive case in Harrisonburg:", harrisonburg_date)
     return
 
 def second_question(data):
@@ -78,6 +90,35 @@ def second_question(data):
     """
 
     # your code here
+
+    # I understand my variables are a bit long and messy, I just wanted to convey exactly what they were/meant through my code. 
+    harrisonburg_yesterday_case = None
+    Rockingham_yesterday_case = None
+    harrisonburg_max = 0
+    rockingham_max = 0
+    harrisonburg_date_max = ""
+    rockingham_date_max = ""
+
+    for (date, county, state, fips, cases, deaths) in data:
+        if state == "Virginia":
+            if county == "Harrisonburg city":
+                if harrisonburg_yesterday_case != None:
+                    new_cases_h = cases - harrisonburg_yesterday_case
+                    if new_cases_h > harrisonburg_max:
+                        harrisonburg_max = new_cases_h
+                        harrisonburg_date_max = date
+                harrisonburg_yesterday_case = cases
+
+            if county == "Rockingham":
+                if Rockingham_yesterday_case != None:
+                    new_cases_r = cases - Rockingham_yesterday_case
+                    if new_cases_r > rockingham_max:
+                        rockingham_max = new_cases_r
+                        rockingham_date_max = date
+                Rockingham_yesterday_case = cases
+    print("Greatest number of new daily cases in Harrisonburg", harrisonburg_max, "on", harrisonburg_date_max)
+    print("Greatest number of new daily cases in Rockingham", rockingham_max, "on", rockingham_date_max)
+        
     return
 
 def third_question(data):
@@ -89,13 +130,59 @@ def third_question(data):
     """
     
     # your code here
+    harrisonburg_dates = []
+    h_new_cases = []
+    rockingham_dates = []
+    r_new_cases = []
+    yesterday_h_cases = None
+    yesterday_r_cases = None
+
+    for (date, county, state, fips, cases, deaths) in data:
+        if state == "Virginia":
+            if county == "Harrisonburg city":
+                if yesterday_h_cases != None:
+                    new_cases = cases - yesterday_h_cases
+                    harrisonburg_dates.append(date)
+                    h_new_cases.append(new_cases)
+                yesterday_h_cases = cases
+            if county == "Rockingham":
+                if yesterday_r_cases != None:
+                    new_cases = cases - yesterday_r_cases
+                    rockingham_dates.append(date)
+                    r_new_cases.append(new_cases)
+                yesterday_r_cases = cases
+    
+    max_harrisonburg_7d = 0
+    max_harrisonburg_start = ""
+    max_harrisonburg_end = ""
+
+    for i in range(len(h_new_cases) - 6):
+        total = sum(h_new_cases[i:i+7])
+        if total > max_harrisonburg_7d:
+            max_harrisonburg_7d = total
+            max_harrisonburg_start = harrisonburg_dates[i]
+            max_harrisonburg_end = harrisonburg_dates[i+6]
+    
+    max_rockingham_7d = 0
+    max_rockingham_start = ""
+    max_rockingham_end = ""
+
+    for i in range(len(r_new_cases) - 6):
+        total = sum(r_new_cases[i:i+7])
+        if total > max_rockingham_7d:
+            max_rockingham_7d = total
+            max_rockingham_start = rockingham_dates[i]
+            max_rockingham_end = rockingham_dates[i+6]
+    
+    print("The number of cases during the worst week in Harrisonburg is:", max_harrisonburg_7d, "starting on", max_harrisonburg_start, "and ending on", max_harrisonburg_end)
+    print("The number of cases during the worst week in Rockingham is:", max_rockingham_7d, "starting on", max_rockingham_start, "and ending on", max_rockingham_end)
     return
 
 if __name__ == "__main__":
     data = parse_nyt_data('us-counties.csv')
 
-    for (date,county, state, fips, cases, deaths) in data:
-        print('On ', date, ' in ', county, ' ', state, ' there were ', cases, ' cases and ', deaths, ' deaths')
+    #for (date,county, state, fips, cases, deaths) in data:
+        #print('On ', date, ' in ', county, ' ', state, ' there were ', cases, ' cases and ', deaths, ' deaths')
 
 
     # write code to address the following question: Use print() to display your responses.
@@ -114,4 +201,4 @@ if __name__ == "__main__":
     # What was the worst seven day period in Rockingham County for new COVID cases (in terms of absolute number of cases)?
     third_question(data)
 
-
+print("I, Paul Clossey, have abided by the JMU Honor Code")
